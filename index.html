@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+     initial-scale=1.0">
+    <title>Scam Group Chat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Scam Chat Room</h2>
+        </div>
+        <ul class="chat-messages" id="chat-messages">
+            <!-- Tin nhắn sẽ được thêm vào đây -->
+        </ul>
+        <div class="chat-input">
+            <form id="chat-form">
+                <input type="text" id="message-input" 
+                placeholder="Type a message...">
+                <button id="send-button">Send</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+    const socket = io()
+
+    const name = prompt('What is your name ?')
+
+    const chatForm = document.getElementById('chat-form')
+    const chatMes = document.getElementById('message-input')
+    const messages = document.getElementById('chat-messages')
+
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const message = chatMes.value
+        socket.emit('on-chat', {
+            name,
+            message
+        })
+        chatMes.value = ''
+    })
+
+    socket.on('user-chat', message => {
+        const chatItem = document.createElement('li')
+        chatItem.textContent = `${message.name}: ${message.message}`
+        messages.appendChild(chatItem)
+    })
+
+</script>
+
+</html>
